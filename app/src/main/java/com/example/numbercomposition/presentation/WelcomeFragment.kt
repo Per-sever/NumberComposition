@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.example.numbercomposition.R
 import com.example.numbercomposition.databinding.FragmentWelcomeBinding
 
 class WelcomeFragment : Fragment() {
@@ -20,6 +21,20 @@ class WelcomeFragment : Fragment() {
     ): View {
         _binding = FragmentWelcomeBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.btnUnderstood.setOnClickListener {
+            launchChooseLevelFragment()
+        }
+    }
+
+    private fun launchChooseLevelFragment() {
+        requireActivity().supportFragmentManager.beginTransaction().replace(
+            R.id.main_container,
+            ChooseLevelFragment.newInstance()
+        ).addToBackStack(null).commit()
     }
 
     override fun onDestroyView() {
