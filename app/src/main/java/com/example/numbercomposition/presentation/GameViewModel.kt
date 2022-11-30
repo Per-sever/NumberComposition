@@ -41,11 +41,11 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         get() = _question
 
     private val _progressOfAnswers = MutableLiveData<String>()
-    val percentOfRightAnswers: LiveData<String>
+    val progressOfAnswers: LiveData<String>
         get() = _progressOfAnswers
 
     private val _percentOfRightAnswers = MutableLiveData<Int>()
-    val progressOfAnswers: LiveData<Int>
+    val percentOfRightAnswers: LiveData<Int>
         get() = _percentOfRightAnswers
 
     private val _enoughCountOfRightAnswers = MutableLiveData<Boolean>()
@@ -72,7 +72,9 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun startGame(level: Level) {
-        startTimer(gameSettings)
+        getGameSettings(level)
+        startTimer()
+        updateProgress()
         generateQuestion()
     }
 
@@ -109,7 +111,12 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private fun calculatePercentOfRightAnswer(): Int {
-        return ((countOfRightAnswers / countOfQuestions.toDouble()) * 100).toInt()
+        return if (countOfRightAnswers == 0) {
+            0
+        } else {
+            ((countOfRightAnswers / countOfQuestions.toDouble()) * 100).toInt()
+
+        }
     }
 
     fun finishGame() {
@@ -120,9 +127,9 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         )
     }
 
-    private fun startTimer(gameSettings: GameSettings) {
+    private fun startTimer() {
         timer = object : CountDownTimer(
-            gameSettings.gameTimeSeconds * MILLIS_IN_SECOND,
+            (gameSettings.gameTimeSeconds * MILLIS_IN_SECOND),
             MILLIS_IN_SECOND
         ) {
             override fun onTick(millisUntilFinished: Long) {
@@ -132,8 +139,8 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             override fun onFinish() {
                 finishGame()
             }
-
         }
+        timer?.start()
     }
 
     override fun onCleared() {
@@ -142,7 +149,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private fun formatTime(millisUntilFinished: Long): String {
-        val seconds = millisUntilFinished * MILLIS_IN_SECOND
+        val seconds = millisUntilFinished / MILLIS_IN_SECOND
         val minutes = seconds / SECONDS_IN_MINUTE
         val restSeconds = seconds - (minutes * SECONDS_IN_MINUTE)
         return String.format("%02d:%02d", minutes, restSeconds)
