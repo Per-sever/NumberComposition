@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.example.numbercomposition.R
 import com.example.numbercomposition.databinding.FragmentGameFinishedBinding
 import com.example.numbercomposition.domain.entity.GameResult
 
@@ -35,6 +36,11 @@ class GameFinishedFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setUpClickListeners()
+        bindViews()
+    }
+
+    private fun setUpClickListeners() {
         val callback = object :
             OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -43,6 +49,39 @@ class GameFinishedFragment : Fragment() {
         }
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
         binding.btnTryAgain.setOnClickListener { retryGame() }
+    }
+
+    private fun bindViews() {
+        binding.resultSmile.setBackgroundResource(getSmileResId())
+        binding.tvRequiredAnswers.text = String.format(
+            getString(R.string.required_answers), gameResult
+                .gameSettings.minCountOfRightAnswers
+        )
+        binding.tvYourScore.text = String.format(
+            getString(R.string.your_score), gameResult
+                .countOfRightAnswers
+        )
+        binding.tvRequiredPercentage.text = String.format(
+            getString(R.string.required_percents),
+            gameResult.gameSettings.minPercentOfRightAnswer
+        )
+
+        binding.tvScoreAnswers.text = String.format(
+            getString(R.string.score_percentage),
+            getPercentOfRightAnswers()
+        )
+    }
+
+    private fun getPercentOfRightAnswers(): String {
+        return ((gameResult.countOfRightAnswers / gameResult.countOfQuestions) * 100).toString()
+    }
+
+    private fun getSmileResId(): Int {
+        return if (gameResult.winner) {
+            R.drawable.ic_smile
+        } else {
+            R.drawable.ic_sad_smile
+        }
     }
 
     private fun retryGame() {

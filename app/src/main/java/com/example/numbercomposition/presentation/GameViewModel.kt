@@ -2,9 +2,9 @@ package com.example.numbercomposition.presentation
 
 import android.app.Application
 import android.os.CountDownTimer
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.example.numbercomposition.R
 import com.example.numbercomposition.data.GameRepositoryImpl
 import com.example.numbercomposition.domain.entity.GameResult
@@ -14,10 +14,10 @@ import com.example.numbercomposition.domain.entity.Question
 import com.example.numbercomposition.domain.usecases.GenerateQuestionUseCase
 import com.example.numbercomposition.domain.usecases.GetGameSettingsUseCase
 
-class GameViewModel(application: Application) : AndroidViewModel(application) {
+class GameViewModel(private val level: Level, private val application: Application) : ViewModel() {
 
     private lateinit var gameSettings: GameSettings
-    private lateinit var level: Level
+
 
     private val context = application
 
@@ -65,14 +65,17 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         get() = _gameResult
 
 
-    private fun getGameSettings(level: Level) {
-        this.level = level
+    private fun getGameSettings() {
         this.gameSettings = getGameSettingsUseCase(level)
         _minPercent.value = gameSettings.minPercentOfRightAnswer
     }
 
-    fun startGame(level: Level) {
-        getGameSettings(level)
+    init {
+        startGame()
+    }
+
+    private fun startGame() {
+        getGameSettings()
         startTimer()
         updateProgress()
         generateQuestion()
