@@ -124,7 +124,8 @@ class GameViewModel(private val level: Level, private val application: Applicati
 
     fun finishGame() {
         _gameResult.value = GameResult(
-            enoughCountOfRightAnswers.value == true,
+            enoughCountOfRightAnswers.value == true &&
+                    enoughPercentOfRightAnswers.value == true,
             countOfRightAnswers,
             countOfQuestions, gameSettings
         )
