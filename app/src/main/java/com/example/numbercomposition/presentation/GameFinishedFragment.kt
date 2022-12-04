@@ -44,24 +44,29 @@ class GameFinishedFragment : Fragment() {
     }
 
     private fun bindViews() {
-        binding.resultSmile.setBackgroundResource(getSmileResId())
-        binding.tvRequiredAnswers.text = String.format(
-            getString(R.string.required_answers), args.gameResult
-                .gameSettings.minCountOfRightAnswers
-        )
-        binding.tvYourScore.text = String.format(
-            getString(R.string.your_score), args.gameResult
-                .countOfRightAnswers
-        )
-        binding.tvRequiredPercentage.text = String.format(
-            getString(R.string.required_percents),
-            args.gameResult.gameSettings.minPercentOfRightAnswer
-        )
+        with(binding) {
+            resultSmile.setBackgroundResource(getSmileResId())
+            gameResult = args.gameResult
+            tvScoreAnswers.text = String.format(
+                getString(R.string.score_percentage),
+                getPercentOfRightAnswers()
+            )
+        }
 
-        binding.tvScoreAnswers.text = String.format(
-            getString(R.string.score_percentage),
-            getPercentOfRightAnswers()
-        )
+//        binding.tvRequiredAnswers.text = String.format(
+//            getString(R.string.required_answers), args.gameResult
+//                .gameSettings.minCountOfRightAnswers
+//        )
+//        binding.tvYourScore.text = String.format(
+//            getString(R.string.your_score), args.gameResult
+//                .countOfRightAnswers
+//        )
+//        binding.tvRequiredPercentage.text = String.format(
+//            getString(R.string.required_percents),
+//            args.gameResult.gameSettings.minPercentOfRightAnswer
+//        )
+
+
     }
 
     private fun getPercentOfRightAnswers() = with(args.gameResult) {
