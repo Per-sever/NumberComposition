@@ -36,7 +36,9 @@ class GameFinishedFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUpClickListeners()
-        bindViews()
+        binding.gameResult = args.gameResult
+
+//        bindViews()
     }
 
     private fun setUpClickListeners() {
@@ -46,7 +48,6 @@ class GameFinishedFragment : Fragment() {
     private fun bindViews() {
         with(binding) {
             resultSmile.setBackgroundResource(getSmileResId())
-            gameResult = args.gameResult
             tvScoreAnswers.text = String.format(
                 getString(R.string.score_percentage),
                 getPercentOfRightAnswers()
